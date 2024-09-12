@@ -70,28 +70,7 @@ data_X, data_Y = datasets.make_classification(
 # 对数据库进行划分
 X_train, X_test, y_train, y_test = train_test_split(data_X, data_Y, test_size=0.3)
 
-class trans3dim_to_2dim(nn.Module):
-    def __init__(self,  in_channels):
-        super(trans3dim_to_2dim, self).__init__()
-        self.in_channels = in_channels
-        #self.out_channels = out_channels
-        self.linear1=nn.Linear(24750,1000)
-        self.linear2=nn.Linear(1000,50)
-        self.linear3=nn.Linear(50,2)
 
-        # self.importance = nn.Parameter(torch.randn(in_channels, self.adjacency.size()[0], self.adjacency.size()[0]))
-        # self.temporal_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels,
-        #                                kernel_size=(1, kernel_length), stride=1, bias=False, padding='same')
-
-    def forward(self, x):
-        #x=x.permute(1,0,2)
-        x=self.linear1(x)
-        x=self.linear2(x)
-        x=self.linear3(x)
-        #x=x.squeeze()
-        #x = torch.matmul(torch.mul(self.adjacency, self.importance), x)
-        #x = self.temporal_conv(x)
-        return x
 
 
 
@@ -109,7 +88,9 @@ combined_array = np.concatenate(train_X, axis=0)
 Tensortrain = torch.Tensor(combined_array)
 #Tensortrain=Tensortrain.unsqueeze(-1)
 Tensortrain=Tensortrain.reshape(192,24750)
-model2=trans3dim_to_2dim(in_channels=22)
+model2 = torch.load('trained_model/best1.pth')
+print(model2)
+
 
 x=model2(Tensortrain)
 x=x.detach().numpy()
